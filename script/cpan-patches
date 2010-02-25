@@ -1,0 +1,53 @@
+#!/usr/bin/perl
+
+=head1 NAME
+
+cpan-patches - work with CPAN patch sets
+
+=head1 SYNOPSIS
+
+	cpan-patches CMD
+	
+		patch           - will apply all patches
+		update-debian   - will update debian/ folder with patches and dependencies
+		list            - list all patches
+
+=head1 DESCRIPTION
+
+=cut
+
+
+use strict;
+use warnings;
+
+use Getopt::Long;
+use Pod::Usage;
+use CPAN::Patches;
+
+use 5.010;
+
+exit main();
+
+sub main {
+	my $help;
+	GetOptions(
+		'help|h' => \$help,
+	) or pod2usage;
+	pod2usage if $help;
+	
+	my $cmd = shift @ARGV;
+	pod2usage if not $cmd;
+	
+	my $cpan_ps = CPAN::Patches->new();
+    my $meta     = $cpan_ps->read_meta();
+    my $name     = $cpan_ps->clean_meta_name($meta->{'name'}) or die 'no name in meta';
+	
+	given ($cmd) {
+		when ('patch')         { CPAN::Patches->patch; }
+		when ('update-debian') { CPAN::Patches->update_debian; }
+		when ('list')          { print join("\n", $cpan_ps->get_patch_series($name), ''); }
+		default { die 'unknown command ', $cmd, "\n" }
+	}
+	
+	return 0;
+}

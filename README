@@ -1,0 +1,111 @@
+NAME
+    CPAN::Patches - patch CPAN distributions
+
+SYNOPSIS
+        cd Some-Distribution
+        cpan-patches patch
+
+    or
+
+        cd Some-Distribution
+        dh-make-perl
+        cpan-patches update-debian
+
+DESCRIPTION
+    This module allows to apply custom patches to the CPAN distributions.
+
+    See the patch and update_debian entries elsewhere in this document for a
+    detail description how.
+
+    See http://github.com/jozef/CPAN-Patches-Set for example generated
+    Debian patches set folder.
+
+PROPERTIES
+  patch_set_location
+    A folder where are the distribution patches located. Default is
+    Sys::Path->sharedstatedir/cpan-patches/set which is
+    /var/lib/cpan-patches/set on Linux.
+
+  verbose
+    Turns on/off some verbose output. By default it is on.
+
+METHODS
+  new()
+    Object constructor.
+
+  patch
+    Apply all patches that are listed in .../module-name/patches/series.
+
+  update_debian
+    Copy all patches and series file from .../module-name/patches/ to
+    debian/patches folder. If there are any patches add `quilt' as
+    `Build-Depends-Indep' and runs adds `--with quilt' to debian/rules. Adds
+    dependencies from .../module-name/debian, adds usage of `xvfb-run' if
+    the modules requires X and renames `s/lib(.*)-perl/$1/' if the
+    distribution is an application.
+
+INTERNAL METHODS
+  merge_debian_versions($v1, $v2)
+    Merges dependecies from `$v1' and `$v2' by keeping the ones that has
+    higher version (if the same).
+
+  get_deb_package_names($control, $key)
+    Return hash with package name as key and version string as value for
+    given `$key' in Debian `$control' file.
+
+  read_debian($name)
+    Read .../module-name/debian for given `$name'.
+
+  decode_debian($src)
+    Parses .../module-name/debian into a hash. Returns hash reference.
+
+  encode_debian($data)
+    Return .../module-name/debian content string generated from `$data'.
+
+  get_patch_series($module_name)
+    Return an array of patches filenames for given `$module_name'.
+
+  clean_meta_name($name)
+    Returns lowercased :: by - substituted and trimmed module name.
+
+  read_meta([$path])
+    Reads a META.yml or META.json from `$path'. If `$path' is not provided
+    than tries to read from current folder.
+
+AUTHOR
+    jozef@kutej.net, `<jkutej at cpan.org>'
+
+BUGS
+    Please report any bugs or feature requests to `bug-cpan-patches at
+    rt.cpan.org', or through the web interface at
+    http://rt.cpan.org/NoAuth/ReportBug.html?Queue=CPAN-Patches. I will be
+    notified, and then you'll automatically be notified of progress on your
+    bug as I make changes.
+
+SUPPORT
+    You can find documentation for this module with the perldoc command.
+
+        perldoc CPAN::Patches
+
+    You can also look for information at:
+
+    * RT: CPAN's request tracker
+        http://rt.cpan.org/NoAuth/Bugs.html?Dist=CPAN-Patches
+
+    * AnnoCPAN: Annotated CPAN documentation
+        http://annocpan.org/dist/CPAN-Patches
+
+    * CPAN Ratings
+        http://cpanratings.perl.org/d/CPAN-Patches
+
+    * Search CPAN
+        http://search.cpan.org/dist/CPAN-Patches/
+
+ACKNOWLEDGEMENTS
+LICENSE AND COPYRIGHT
+    This program is free software; you can redistribute it and/or modify it
+    under the terms of either: the GNU General Public License as published
+    by the Free Software Foundation; or the Artistic License.
+
+    See http://dev.perl.org/licenses/ for more information.
+
