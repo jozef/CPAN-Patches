@@ -6,11 +6,14 @@ cpan-patches - work with CPAN patch sets
 
 =head1 SYNOPSIS
 
-	cpan-patches CMD
+	cpan-patches [--patch-set FOLDER] CMD
 	
-		patch           - will apply all patches
-		update-debian   - will update debian/ folder with patches and dependencies
-		list            - list all patches
+		patch  - will apply all patches
+		list   - list all patches
+		?      - check out CPAN::Patches::Plugin::* for additional commands
+		
+		--patch-set FOLDER
+			is the FOLDER where the patch-sets are stored
 
 =head1 DESCRIPTION
 
@@ -22,7 +25,7 @@ use warnings;
 
 use Getopt::Long;
 use Pod::Usage;
-use CPAN::Patches;
+use CPAN::Patches 0.02;
 
 use 5.010;
 
@@ -30,24 +33,26 @@ exit main();
 
 sub main {
 	my $help;
+	my $set_folder;
 	GetOptions(
 		'help|h' => \$help,
+		'patch-set|s=s' => \$set_folder,
 	) or pod2usage;
 	pod2usage if $help;
 	
 	my $cmd = shift @ARGV;
 	pod2usage if not $cmd;
+	$cmd =~ s/-/_/;
+	$cmd = 'cmd_'.$cmd;
 	
-	my $cpan_ps = CPAN::Patches->new();
-    my $meta     = $cpan_ps->read_meta();
-    my $name     = $cpan_ps->clean_meta_name($meta->{'name'}) or die 'no name in meta';
+	my $cpan_ps  = CPAN::Patches->new(
+		$set_folder
+		? ('patch_set_location' => $set_folder)
+		: ()
+	);
+	pod2usage if not $cpan_ps->can($cmd);
 	
-	given ($cmd) {
-		when ('patch')         { CPAN::Patches->patch; }
-		when ('update-debian') { CPAN::Patches->update_debian; }
-		when ('list')          { print join("\n", $cpan_ps->get_patch_series($name), ''); }
-		default { die 'unknown command ', $cmd, "\n" }
-	}
+	$cpan_ps->$cmd();
 	
 	return 0;
 }

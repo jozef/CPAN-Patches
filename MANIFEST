@@ -6,9 +6,6 @@ MANIFEST			This list of files
 META.yml
 README
 script/cpan-patches
-script/cpan-patches-update-from-debian
-sharedstate/cpan-patches/debian-set/.exists
-sharedstate/cpan-patches/pkg-perl-trunk/.exists
 sharedstate/cpan-patches/set/.exists
 t/00_compile.t
 t/distribution.t
