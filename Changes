@@ -1,5 +1,8 @@
 Revision history for CPAN-Patches
 
+0.03     2 Mar 2010
+    * fixed plugin loading (ignoring nested plugin names)
+
 0.02     1 Mar 2010
     * moved Debian specific functionality to CPAN::Patches::Plugin::Debian
 

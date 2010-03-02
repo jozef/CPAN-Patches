@@ -26,7 +26,7 @@ Debian patches set folder.
 use warnings;
 use strict;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use Moose;
 use CPAN::Patches::SPc;
@@ -75,7 +75,10 @@ All plugins (Moose roles) from C<CPAN::Patches::Plugin::*> will be loaded.
 sub BUILD {
 	my $self = shift;
 	
+	my $pkg = __PACKAGE__;
 	foreach my $plugin ($self->plugins) {
+		# ignore nested package names, only one level
+		next if $plugin =~ m/^ $pkg :: Plugin :: [^:]+ ::/xms;
 		$plugin->meta->apply($self);
 	}
 };
