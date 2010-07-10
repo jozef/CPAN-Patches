@@ -40,9 +40,9 @@ use Module::Pluggable require => 1;
 
 =head1 PROPERTIES
 
-=head2 patch_set_location
+=head2 patch_set_locations
 
-A folder where are the distribution patches located. Default is
+An array ref of folders where are the distribution patches located. Default is
 F<< Sys::Path->sharedstatedir/cpan-patches/set >> which is
 F</var/lib/cpan-patches/set> on Linux.
 
@@ -52,11 +52,11 @@ Turns on/off some verbose output. By default it is on.
 
 =cut
 
-has 'patch_set_location' => (
+has 'patch_set_locations' => (
     is      => 'rw',
-    isa     => 'Str',
+    isa     => 'ArrayRef',
     lazy    => 1,
-    default => sub { File::Spec->catdir(CPAN::Patches::SPc->sharedstatedir, 'cpan-patches', 'set') }
+    default => sub { [ File::Spec->catdir(CPAN::Patches::SPc->sharedstatedir, 'cpan-patches', 'set') ] }
 );
 has 'verbose' => ( is => 'rw', isa => 'Int', default => 1 );
 
@@ -108,7 +108,7 @@ sub patch {
     return;
 }
 
-=head1 cpan-patch CMD
+=head1 cpan-patch commands
 
 =head2 cmd_list
 
@@ -146,7 +146,7 @@ sub get_patch_series {
     my $self = shift;
     my $name = shift || $self->clean_meta_name;
     
-    my $patches_folder  = File::Spec->catdir($self->patch_set_location, $name, 'patches');
+    my $patches_folder  = File::Spec->catdir($self->get_module_folder($name), 'patches');
     my $series_filename = File::Spec->catfile($patches_folder, 'series');
 
     return if not -r $series_filename;
@@ -157,6 +157,26 @@ sub get_patch_series {
         map  { s/\s*$//;$_; }
         map  { split "\n" }
         eval { IO::Any->slurp([$series_filename]) };
+}
+
+=head2 get_module_folder($module_name)
+
+Returns a folder that exists in one of the C<patch_set_locations> for a
+given C<$module_name>.
+
+=cut
+
+sub get_module_folder {
+    my $self = shift;
+    my $name = shift || $self->clean_meta_name;
+	
+	foreach my $patch_set_location (@{$self->patch_set_locations}) {
+    	my $folder  = File::Spec->catdir($patch_set_location, $name);
+		return $folder
+			if -d $folder;
+	}
+	
+	return;
 }
 
 =head2 clean_meta_name($name)
@@ -202,6 +222,12 @@ sub read_meta {
     }
     croak 'failed to read META.(yml|json)';
 }
+
+=head2 read_meta_intrusive
+
+Generates and reads the F<META.yml> using F<Build.PL> or F<Makefile.PL>.
+
+=cut
 
 sub read_meta_intrusive {
     my $self = shift;

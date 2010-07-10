@@ -19,7 +19,10 @@ add_stopwords(qw(
 	html
 	RT
 	CPAN
+	cpan
 	AnnoCPAN
 	http
+	sharedstatedir
+	plugins
 ));
 all_pod_files_spelling_ok();

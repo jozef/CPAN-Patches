@@ -2,6 +2,9 @@ Revision history for CPAN-Patches
 
 0.04    10 Jul 2010
     * added read_meta_intrusive() that generates META.yml
+    * the patch set folders are "stackable"
+    * added get_module_folder() to resolve the first set folder that has
+      some files for a module
 
 0.03     2 Mar 2010
     * fixed plugin loading (ignoring nested plugin names)

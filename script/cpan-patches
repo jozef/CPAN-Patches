@@ -33,10 +33,10 @@ exit main();
 
 sub main {
 	my $help;
-	my $set_folder;
+	my @set_folders;
 	GetOptions(
 		'help|h' => \$help,
-		'patch-set|s=s' => \$set_folder,
+		'patch-set|s=s' => \@set_folders,
 	) or pod2usage;
 	pod2usage if $help;
 	
@@ -46,8 +46,8 @@ sub main {
 	$cmd = 'cmd_'.$cmd;
 	
 	my $cpan_ps  = CPAN::Patches->new(
-		$set_folder
-		? ('patch_set_location' => $set_folder)
+		scalar @set_folders
+		? ('patch_set_locations' => \@set_folders)
 		: ()
 	);
 	pod2usage if not $cpan_ps->can($cmd);

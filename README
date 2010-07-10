@@ -18,9 +18,9 @@ DESCRIPTION
     generated Debian patches set folder.
 
 PROPERTIES
-  patch_set_location
-    A folder where are the distribution patches located. Default is
-    Sys::Path->sharedstatedir/cpan-patches/set which is
+  patch_set_locations
+    An array ref of folders where are the distribution patches located.
+    Default is Sys::Path->sharedstatedir/cpan-patches/set which is
     /var/lib/cpan-patches/set on Linux.
 
   verbose
@@ -37,7 +37,7 @@ METHODS
   patch
     Apply all patches that are listed in .../module-name/patches/series.
 
-cpan-patch CMD
+cpan-patch commands
   cmd_list
     Print out list of all patches files.
 
@@ -48,12 +48,19 @@ INTERNAL METHODS
   get_patch_series($module_name)
     Return an array of patches filenames for given `$module_name'.
 
+  get_module_folder($module_name)
+    Returns a folder that exists in one of the `patch_set_locations' for a
+    given `$module_name'.
+
   clean_meta_name($name)
     Returns lowercased :: by - substituted and trimmed module name.
 
   read_meta([$path])
     Reads a META.yml or META.json from `$path'. If `$path' is not provided
     than tries to read from current folder.
+
+  read_meta_intrusive
+    Generates and reads the META.yml using Build.PL or Makefile.PL.
 
 AUTHOR
     jozef@kutej.net, `<jkutej at cpan.org>'
