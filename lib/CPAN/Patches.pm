@@ -26,7 +26,7 @@ Debian patches set folder.
 use warnings;
 use strict;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use Moose;
 use CPAN::Patches::SPc;
@@ -102,7 +102,7 @@ sub patch {
     foreach my $patch_filename ($self->get_patch_series) {
         print 'patching ', $name,' with ', $patch_filename, "\n"
             if $self->verbose;
-        system('cat '.$patch_filename.' | patch -p1');
+        system('cat '.$patch_filename.' | patch -p1') and die 'failed';
     }
     
     return;
@@ -200,7 +200,38 @@ sub read_meta {
         return $meta
             if $meta;
     }
-    croak 'failed to read meta file';
+    croak 'failed to read META.(yml|json)';
+}
+
+sub read_meta_intrusive {
+    my $self = shift;
+    my $path = shift || '.';
+
+    my $buildpl    = File::Spec->catfile($path, 'Build.PL');
+    my $makefilepl = File::Spec->catfile($path, 'Makefile.PL');
+	if (-f $buildpl or -f $makefilepl) {
+		warn 'going to generate META.yml';
+		
+		my $meta;
+		my $distmeta  = 'perl Makefile.PL && make distmeta && cp */META.yml ./';
+		my $distclean = 'make distclean';
+		if (-f $buildpl) {
+			$distmeta  = 'perl Build.PL && ./Build distmeta';
+			$distclean = './Build distclean';
+		}
+		
+		do {
+			local $CWD = $path;
+			system($distmeta);
+			$meta = eval { $self->read_meta };
+			system($distclean);
+		};
+		
+		return $meta
+			if $meta;
+	}
+	
+    croak 'failed to read META.(yml|json)';
 }
 
 __PACKAGE__->meta->make_immutable;

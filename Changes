@@ -1,5 +1,8 @@
 Revision history for CPAN-Patches
 
+0.04    10 Jul 2010
+    * added read_meta_intrusive() that generates META.yml
+
 0.03     2 Mar 2010
     * fixed plugin loading (ignoring nested plugin names)
 
