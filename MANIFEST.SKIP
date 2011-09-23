@@ -36,3 +36,4 @@ sharedstate/cpan-patches/set/[^.]
 sharedstate/cpan-patches/debian-set/[^.]
 sharedstate/cpan-patches/pkg-perl-trunk/[^.]
 
+^MYMETA\.json$

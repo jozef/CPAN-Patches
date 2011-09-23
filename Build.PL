@@ -17,8 +17,9 @@ my $builder = Module::Build::SysPath->new(
     dist_version_from => 'lib/CPAN/Patches.pm',
     
     configure_requires => {
-        'Module::Build::SysPath' => 0.13,
+        'Module::Build::SysPath' => 0.16,
         'File::Which'            => 0,
+        'Module::Build'          => 0.36,
     },
     build_requires => {
         'Module::Build::SysPath' => 0.13,

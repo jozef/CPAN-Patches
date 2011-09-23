@@ -3,6 +3,7 @@ Changes
 lib/CPAN/Patches.pm
 lib/CPAN/Patches/SPc.pm
 MANIFEST			This list of files
+META.json
 META.yml
 README
 script/cpan-patches
