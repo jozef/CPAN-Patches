@@ -102,7 +102,7 @@ sub patch {
     foreach my $patch_filename ($self->get_patch_series) {
         print 'patching ', $name,' with ', $patch_filename, "\n"
             if $self->verbose;
-        system('cat '.$patch_filename.' | patch -p1') and die 'failed';
+        system('cat '.$patch_filename.' | patch --quiet -p1') and die 'failed';
     }
     
     return;

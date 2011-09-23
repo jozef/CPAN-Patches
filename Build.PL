@@ -1,8 +1,14 @@
 use strict;
 use warnings;
 use Module::Build::SysPath;
+use File::Which 'which';
 
 use 5.010;
+
+if (not which('patch')) {
+    print STDERR "patch command is not installed on this system\n";
+    exit 0;
+}
 
 my $builder = Module::Build::SysPath->new(
     module_name       => 'CPAN::Patches',
@@ -12,10 +18,16 @@ my $builder = Module::Build::SysPath->new(
     
     configure_requires => {
         'Module::Build::SysPath' => 0.13,
+        'File::Which'            => 0,
     },
     build_requires => {
         'Module::Build::SysPath' => 0.13,
         'Test::More'             => 0,
+        'Test::Dirs'             => 0.03,
+        'Test::Differences'      => 0,
+        'Test::Exception'        => 0,
+        'File::Temp'             => 0,
+        'File::chdir'            => 0,
     },
     requires => {
         'Moose'                   => 0,
