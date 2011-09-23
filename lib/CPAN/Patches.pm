@@ -1,28 +1,5 @@
 package CPAN::Patches;
 
-=head1 NAME
-
-CPAN::Patches - patch CPAN distributions
-
-=head1 SYNOPSIS
-
-    cd Some-Distribution
-    cpan-patches list
-    cpan-patches patch
-    cpan-patches --patch-set $HOME/cpan-patches-set list
-    cpan-patches --patch-set $HOME/cpan-patches-set patch
-
-=head1 DESCRIPTION
-
-This module allows to apply custom patches to the CPAN distributions.
-
-See L</patch> and L</update_debian> for a detail description how.
-
-See L<http://github.com/jozef/CPAN-Patches-Example-Set> for example generated
-Debian patches set folder.
-
-=cut
-
 use warnings;
 use strict;
 
@@ -38,20 +15,6 @@ use File::chdir;
 use Scalar::Util 'blessed';
 use Module::Pluggable require => 1;
 
-=head1 PROPERTIES
-
-=head2 patch_set_locations
-
-An array ref of folders where are the distribution patches located. Default is
-F<< Sys::Path->sharedstatedir/cpan-patches/set >> which is
-F</var/lib/cpan-patches/set> on Linux.
-
-=head2 verbose
-
-Turns on/off some verbose output. By default it is on.
-
-=cut
-
 has 'patch_set_locations' => (
     is      => 'rw',
     isa     => 'ArrayRef',
@@ -59,18 +22,6 @@ has 'patch_set_locations' => (
     default => sub { [ File::Spec->catdir(CPAN::Patches::SPc->sharedstatedir, 'cpan-patches', 'set') ] }
 );
 has 'verbose' => ( is => 'rw', isa => 'Int', default => 1 );
-
-=head1 METHODS
-
-=head2 new()
-
-Object constructor.
-
-=head2 BUILD
-
-All plugins (Moose roles) from C<CPAN::Patches::Plugin::*> will be loaded.
-
-=cut
 
 sub BUILD {
 	my $self = shift;
@@ -82,12 +33,6 @@ sub BUILD {
 		$plugin->meta->apply($self);
 	}
 };
-
-=head2 patch
-
-Apply all patches that are listed in F<.../module-name/patches/series>.
-
-=cut
 
 sub patch {
     my $self = shift;
@@ -108,14 +53,6 @@ sub patch {
     return;
 }
 
-=head1 cpan-patch commands
-
-=head2 cmd_list
-
-Print out list of all patches files.
-
-=cut
-
 sub cmd_list {
     my $self = shift;
 	foreach my $patch_filename ($self->get_patch_series) {
@@ -123,24 +60,9 @@ sub cmd_list {
 	}
 }
 
-=head2 cmd_patch
-
-Apply all patches to the current CPAN distribution.
-
-=cut
-
 sub cmd_patch {
 	shift->patch();
 }
-
-
-=head1 INTERNAL METHODS
-
-=head2 get_patch_series($module_name)
-
-Return an array of patches filenames for given C<$module_name>.
-
-=cut
 
 sub get_patch_series {
     my $self = shift;
@@ -159,13 +81,6 @@ sub get_patch_series {
         eval { IO::Any->slurp([$series_filename]) };
 }
 
-=head2 get_module_folder($module_name)
-
-Returns a folder that exists in one of the C<patch_set_locations> for a
-given C<$module_name>.
-
-=cut
-
 sub get_module_folder {
     my $self = shift;
     my $name = shift || $self->clean_meta_name;
@@ -179,12 +94,6 @@ sub get_module_folder {
 	return;
 }
 
-=head2 clean_meta_name($name)
-
-Returns lowercased :: by - substituted and trimmed module name.
-
-=cut
-
 sub clean_meta_name {
     my $self = shift;
     my $name = shift || $self->read_meta->{'name'};
@@ -196,13 +105,6 @@ sub clean_meta_name {
 
     return $name;    
 }
-
-=head2 read_meta([$path])
-
-Reads a F<META.yml> or F<META.json> from C<$path>. If C<$path> is not provided
-than tries to read from current folder.
-
-=cut
 
 sub read_meta {
     my $self = shift;
@@ -222,12 +124,6 @@ sub read_meta {
     }
     croak 'failed to read META.(yml|json)';
 }
-
-=head2 read_meta_intrusive
-
-Generates and reads the F<META.yml> using F<Build.PL> or F<Makefile.PL>.
-
-=cut
 
 sub read_meta_intrusive {
     my $self = shift;
@@ -266,6 +162,87 @@ __PACKAGE__->meta->make_immutable;
 
 
 __END__
+
+=head1 NAME
+
+CPAN::Patches - patch CPAN distributions
+
+=head1 SYNOPSIS
+
+    cd Some-Distribution
+    cpan-patches list
+    cpan-patches patch
+    cpan-patches --patch-set $HOME/cpan-patches-set list
+    cpan-patches --patch-set $HOME/cpan-patches-set patch
+
+=head1 DESCRIPTION
+
+This module allows to apply custom patches to the CPAN distributions.
+
+See L</patch> and L</update_debian> for a detail description how.
+
+See L<http://github.com/jozef/CPAN-Patches-Example-Set> for example generated
+Debian patches set folder.
+
+=head1 PROPERTIES
+
+=head2 patch_set_locations
+
+An array ref of folders where are the distribution patches located. Default is
+F<< Sys::Path->sharedstatedir/cpan-patches/set >> which is
+F</var/lib/cpan-patches/set> on Linux.
+
+=head2 verbose
+
+Turns on/off some verbose output. By default it is on.
+
+=head1 METHODS
+
+=head2 new()
+
+Object constructor.
+
+=head2 BUILD
+
+All plugins (Moose roles) from C<CPAN::Patches::Plugin::*> will be loaded.
+
+=head2 patch
+
+Apply all patches that are listed in F<.../module-name/patches/series>.
+
+=head1 cpan-patch commands
+
+=head2 cmd_list
+
+Print out list of all patches files.
+
+=head2 cmd_patch
+
+Apply all patches to the current CPAN distribution.
+
+=head1 INTERNAL METHODS
+
+=head2 get_patch_series($module_name)
+
+Return an array of patches filenames for given C<$module_name>.
+
+=head2 get_module_folder($module_name)
+
+Returns a folder that exists in one of the C<patch_set_locations> for a
+given C<$module_name>.
+
+=head2 clean_meta_name($name)
+
+Returns lowercased :: by - substituted and trimmed module name.
+
+=head2 read_meta([$path])
+
+Reads a F<META.yml> or F<META.json> from C<$path>. If C<$path> is not provided
+than tries to read from current folder.
+
+=head2 read_meta_intrusive
+
+Generates and reads the F<META.yml> using F<Build.PL> or F<Makefile.PL>.
 
 =head1 AUTHOR
 
