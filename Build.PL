@@ -39,6 +39,7 @@ my $builder = Module::Build::SysPath->new(
         'Getopt::Long'            => 0,
         'Pod::Usage'              => 0,
         'File::chdir'             => 0,
+        'File::Find::Rule'        => 0,
         'Scalar::Util'            => 0,
         'Module::Pluggable'       => 0,
     },
