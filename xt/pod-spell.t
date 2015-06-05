@@ -24,5 +24,6 @@ add_stopwords(qw(
 	http
 	sharedstatedir
 	plugins
+	blog
 ));
 all_pod_files_spelling_ok();

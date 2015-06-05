@@ -62,6 +62,14 @@ INTERNAL METHODS
   read_meta_intrusive
     Generates and reads the META.yml using Build.PL or Makefile.PL.
 
+CONTRIBUTORS
+    The following people have contributed to the CPAN::Patches by committing
+    their code, sending patches, reporting bugs, asking questions,
+    suggesting useful advises, nitpicking, chatting on IRC or commenting on
+    my blog (in no particular order):
+
+            Slaven Rezić
+
 AUTHOR
     jozef@kutej.net, `<jkutej at cpan.org>'
 

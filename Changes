@@ -1,5 +1,8 @@
 Revision history for CPAN-Patches
 
+0.05    5 Jun 2015
+    * test fixes, thanks to Slaven Rezić
+
 0.04    10 Jul 2010
     * added read_meta_intrusive() that generates META.yml
     * the patch set folders are "stackable"

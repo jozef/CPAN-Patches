@@ -3,7 +3,7 @@ package CPAN::Patches;
 use warnings;
 use strict;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use Moose;
 use CPAN::Patches::SPc;
@@ -163,6 +163,8 @@ __PACKAGE__->meta->make_immutable;
 
 __END__
 
+=encoding utf8
+
 =head1 NAME
 
 CPAN::Patches - patch CPAN distributions
@@ -243,6 +245,15 @@ than tries to read from current folder.
 =head2 read_meta_intrusive
 
 Generates and reads the F<META.yml> using F<Build.PL> or F<Makefile.PL>.
+
+=head1 CONTRIBUTORS
+
+The following people have contributed to the CPAN::Patches by committing their
+code, sending patches, reporting bugs, asking questions, suggesting useful
+advises, nitpicking, chatting on IRC or commenting on my blog (in no particular
+order):
+
+	Slaven Rezić
 
 =head1 AUTHOR
 

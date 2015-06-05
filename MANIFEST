@@ -10,11 +10,6 @@ script/cpan-patches
 sharedstate/cpan-patches/set/.exists
 t/00_compile.t
 t/01_CPAN-Patches.t
-t/distribution.t
-t/fixme.t
-t/pod-coverage.t
-t/pod-spell.t
-t/pod.t
 t/t-patches-set/acme-cpan-patches/patches/10_but-second.patch
 t/t-patches-set/acme-cpan-patches/patches/30_but-first.patch
 t/t-patches-set/acme-cpan-patches/patches/series
@@ -38,3 +33,8 @@ t/to-patch/Acme-CPAN-Patches/lib/Acme/CPAN/Patches.pm
 t/to-patch/Acme-CPAN-Patches/MANIFEST
 t/to-patch/Acme-CPAN-Patches/MANIFEST.SKIP
 t/to-patch/Acme-CPAN-Patches/META.yml
+xt/distribution.t
+xt/fixme.t
+xt/pod-coverage.t
+xt/pod-spell.t
+xt/pod.t
